@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo"
 )
 
+//User : структура содержащая данныe пользователя
 type (
 	User struct {
 		Name string `json:"name"`

@@ -4,30 +4,18 @@ import (
 	"net/http"
 
 	"github.com/alexkuz457/chat/chat"
+	"github.com/alexkuz457/chat/message"
 	"github.com/alexkuz457/chat/user"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/labstack/echo"
 )
 
-//Сообщение в чате. Имеет следующие свойства:
-//id - уникальный идентификатор сообщения
-//chat - ссылка на идентификатор чата, в который было отправлено сообщение
-//author - ссылка на идентификатор отправителя сообщения, отношение многие-к-одному
-//text - текст отправленного сообщения
-//created_at - время создания
-type Message struct {
-	id         string `json:"id"`
-	chat       string `json:"chat"`
-	autor      string `json:"autor"`
-	text       string `json:"text"`
-	created_at string `json:"created_at"`
-}
-
 func main() {
 	e := echo.New()
 	e.POST("users/add", addUser)
 	e.POST("chats/add", addChat)
+	e.POST("messages/add", addMessage)
 	e.Logger.Fatal(e.Start(":9000"))
 }
 
@@ -40,9 +28,7 @@ func Database() *gorm.DB {
 }
 
 func addUser(c echo.Context) (err error) {
-
 	r := new(user.Request)
-
 	if err = c.Bind(r); err != nil {
 		return
 	}
@@ -55,17 +41,23 @@ func addUser(c echo.Context) (err error) {
 }
 
 func addChat(c echo.Context) (err error) {
-
-	u := new(chat.Chat)
-	db := Database()
-
-	if err = c.Bind(u); err != nil {
+	r := new(chat.Request)
+	if err = c.Bind(r); err != nil {
 		return
 	}
-	db.Create(u)
-	//query := "INSERT INTO public.chats(name, users) VALUES ($1, $2)"
-	//_, err = db.Exec(query, u.Name, pq.Array(u.Users))
-	//db.Save(u)
-
+	db := Database()
+	u, err := chat.CreateChat(db, r)
+	defer db.Close()
 	return c.JSON(http.StatusOK, u.Id)
+}
+
+func addMessage(c echo.Context) (err error) {
+	r := new(message.Request)
+	if err = c.Bind(r); err != nil {
+		return
+	}
+	db := Database()
+	id, err := message.CreateMessage(db, r)
+	defer db.Close()
+	return c.JSON(http.StatusOK, id)
 }

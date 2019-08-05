@@ -2,20 +2,14 @@ package main
 
 import (
 	"net/http"
+	"os/user"
 	"time"
 
+	//"github.com/alexkuz457/chat/user"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/labstack/echo"
 )
-
-//User : структура содержащая данныe пользователя
-type User struct {
-	//gorm.Model
-	Id         int16     `gorm:"primary_key" json:"id"`
-	Username   string    `json:"name"`
-	Created_at time.Time `json:"created_at"`
-}
 
 //Отдельный чат. Имеет следующие свойства:
 //id - уникальный идентификатор чата
@@ -23,10 +17,10 @@ type User struct {
 //users - список пользователей в чате, отношение многие-ко-многим
 //created_at - время создания
 type Chat struct {
-	Id         string    `json:"id"`
-	Name       string    `json:"name"`
-	Users      []User.Id `gorm:"many2many:users;" json:"users"`
-	Created_at time.Time `json:"created_at"`
+	Id         string      `json:"id"`
+	Name       string      `json:"name"`
+	Users      []user.User `gorm:"many2many:users;" json:"users"`
+	Created_at time.Time   `json:"created_at"`
 }
 
 //Сообщение в чате. Имеет следующие свойства:
@@ -59,13 +53,17 @@ func Database() *gorm.DB {
 }
 
 func addUser(c echo.Context) (err error) {
-	u := new(User)
-	if err = c.Bind(u); err != nil {
+	//user.AddUser(c)
+
+	//u := new(user)
+	user.AddUser(c)
+
+	/*if err = c.Bind(u); err != nil {
 		return
-	}
-	db := Database()
-	db.Save(u)
-	return c.JSON(http.StatusOK, u.Id)
+	}*/
+	//db := Database()
+	//db.Save(u)
+	return c.JSON(http.StatusOK, "u")
 }
 
 func addChat(c echo.Context) (err error) {

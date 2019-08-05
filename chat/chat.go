@@ -1,8 +1,9 @@
 package chat
 
 import (
-	"os/user"
 	"time"
+
+	"github.com/alexkuz457/chat/user"
 )
 
 //Отдельный чат. Имеет следующие свойства:

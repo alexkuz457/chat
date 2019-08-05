@@ -2,26 +2,13 @@ package main
 
 import (
 	"net/http"
-	"os/user"
-	"time"
 
-	//"github.com/alexkuz457/chat/user"
+	"github.com/alexkuz457/chat/chat"
+	"github.com/alexkuz457/chat/user"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/labstack/echo"
 )
-
-//Отдельный чат. Имеет следующие свойства:
-//id - уникальный идентификатор чата
-//name - уникальное имя чата
-//users - список пользователей в чате, отношение многие-ко-многим
-//created_at - время создания
-type Chat struct {
-	Id         string      `json:"id"`
-	Name       string      `json:"name"`
-	Users      []user.User `gorm:"many2many:users;" json:"users"`
-	Created_at time.Time   `json:"created_at"`
-}
 
 //Сообщение в чате. Имеет следующие свойства:
 //id - уникальный идентификатор сообщения
@@ -53,21 +40,23 @@ func Database() *gorm.DB {
 }
 
 func addUser(c echo.Context) (err error) {
-	//user.AddUser(c)
 
-	u := new(user.Request)
+	r := new(user.Request)
 
-	if err = c.Bind(u); err != nil {
+	if err = c.Bind(r); err != nil {
 		return
 	}
-	//db := Database()
-	//db.Save(u)
-	return c.JSON(http.StatusOK, "u")
+	db := Database()
+	u, err := user.CreateUser(db, r)
+
+	defer db.Close()
+
+	return c.JSON(http.StatusOK, u.Id)
 }
 
 func addChat(c echo.Context) (err error) {
 
-	u := new(Chat)
+	u := new(chat.Chat)
 	db := Database()
 
 	if err = c.Bind(u); err != nil {

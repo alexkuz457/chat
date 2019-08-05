@@ -55,12 +55,11 @@ func Database() *gorm.DB {
 func addUser(c echo.Context) (err error) {
 	//user.AddUser(c)
 
-	//u := new(user)
-	user.AddUser(c)
+	u := new(user.Request)
 
-	/*if err = c.Bind(u); err != nil {
+	if err = c.Bind(u); err != nil {
 		return
-	}*/
+	}
 	//db := Database()
 	//db.Save(u)
 	return c.JSON(http.StatusOK, "u")

@@ -5,8 +5,8 @@ import (
 	"github.com/lib/pq"
 )
 
-//создает нового пользователя в базе данных
-func CreateChat(db *gorm.DB, r *Request) (c *Chat, err error) {
+//получает список чатов конкретногопользователя
+func GetUserChats(db *gorm.DB, r *Request) (c *Chat, err error) {
 	c = new(Chat)
 	c.Name = r.Name
 	c.Users = r.Users

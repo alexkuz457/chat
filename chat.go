@@ -17,6 +17,7 @@ func main() {
 	e.POST("chats/add", addChat)
 	e.POST("messages/add", addMessage)
 	e.POST("chats/get", getChat)
+	e.POST("messages/get", getMessages)
 	e.Logger.Fatal(e.Start(":9000"))
 }
 
@@ -69,7 +70,20 @@ func getChat(c echo.Context) (err error) {
 		return
 	}
 	db := Database()
-	u, err := chat.
+	u, _ := chat.GetUserChats(db, r)
 	defer db.Close()
-	return c.JSON(http.StatusOK, u.Id)
+
+	return c.JSON(http.StatusOK, u)
+}
+
+func getMessages(c echo.Context) (err error) {
+	r := new(message.GetChatMessagesRequest)
+	if err = c.Bind(r); err != nil {
+		return
+	}
+	db := Database()
+	u, _ := message.GetChatMessages(db, r)
+	defer db.Close()
+
+	return c.JSON(http.StatusOK, u)
 }

@@ -10,9 +10,14 @@ type Request struct {
 	Users []int  `json:"users"`
 }
 
-//структура запроса на получение чатов конкретного пользователя
+//GetUserChatsRequest структура запроса на получение чатов конкретного пользователя
 type GetUserChatsRequest struct {
 	User int `json:"user"`
+}
+
+//GetUserChatsResponce структура запроса на получение чатов конкретного пользователя
+type GetUserChatsResponce struct {
+	User int 
 }
 
 //структура чата в бд.

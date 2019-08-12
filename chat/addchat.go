@@ -5,7 +5,7 @@ import (
 	"github.com/lib/pq"
 )
 
-//создает нового пользователя в базе данных
+//CreateChat создает новый чат в базе данных
 func CreateChat(db *gorm.DB, r *Request) (c *Chat, err error) {
 	c = new(Chat)
 	c.Name = r.Name

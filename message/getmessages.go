@@ -7,8 +7,8 @@ import (
 //GetChatMessages получает список сообщений в чате
 func GetChatMessages(db *gorm.DB, r *GetChatMessagesRequest) (messages []*Message, err error) {
 
-	rows, err := db.Raw("SELECT id, chat, created_at, autor, text  FROM messages WHERE chat = $1)", r.Chat).Rows()
-
+	rows, err := db.Raw("SELECT id, chat, created_at, autor, text  FROM messages WHERE chat = $1 ORDER BY created_at", r.Chat).Rows()
+	//
 	for rows.Next() {
 		m := new(Message)
 		rows.Scan(&m.Id, &m.Chat, &m.Created_at, &m.Autor, &m.Text)
